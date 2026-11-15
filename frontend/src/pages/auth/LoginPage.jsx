@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import SecurityCaptcha from '../../components/SecurityCaptcha';
 import { Briefcase, Lock, Mail, ArrowRight, ShieldCheck, UserCheck } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const captchaRef = useRef(null);
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,6 +17,10 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!captchaRef.current?.validate()) {
+      return;
+    }
+
     try {
       setLoading(true);
       const user = await login(email, password);
@@ -28,6 +34,7 @@ export default function LoginPage() {
         navigate('/freelancer', { replace: true });
       }
     } catch (err) {
+      captchaRef.current?.refresh();
       // handled by AuthContext toast
     } finally {
       setLoading(false);
@@ -37,6 +44,7 @@ export default function LoginPage() {
   const handleQuickLogin = (demoEmail, demoRole) => {
     setEmail(demoEmail);
     setPassword('password123');
+    captchaRef.current?.autoVerify();
   };
 
   return (
@@ -126,6 +134,9 @@ export default function LoginPage() {
                 />
               </div>
             </div>
+
+            {/* Anti-Bot Security Captcha */}
+            <SecurityCaptcha ref={captchaRef} />
 
             <button
               type="submit"

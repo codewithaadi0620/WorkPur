@@ -4,6 +4,107 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 antialiased font-sans min-h-screen selection:bg-indigo-500 selection:text-white;
+    @apply antialiased font-sans min-h-screen selection:bg-indigo-500 selection:text-white transition-colors duration-200;
   }
+}
+
+/* =========================================================================
+   THEME STYLES (Light Indigo, Midnight Dark, Emerald FinTech, Royal Violet)
+   ========================================================================= */
+
+/* Midnight Dark Theme */
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] .bg-white {
+  background-color: #0f172a !important;
+  color: #f8fafc;
+  border-color: #1e293b !important;
+}
+
+html[data-theme="dark"] .bg-slate-50 {
+  background-color: #090d16 !important;
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .bg-slate-100 {
+  background-color: #1e293b !important;
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .border-slate-200,
+html[data-theme="dark"] .border-slate-100 {
+  border-color: #1e293b !important;
+}
+
+html[data-theme="dark"] .text-slate-900,
+html[data-theme="dark"] .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .text-slate-700,
+html[data-theme="dark"] .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .text-slate-500,
+html[data-theme="dark"] .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] header {
+  background-color: rgba(15, 23, 42, 0.95) !important;
+  border-color: #1e293b !important;
+}
+
+html[data-theme="dark"] aside {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+/* Emerald FinTech Theme */
+html[data-theme="emerald"] .bg-indigo-600 {
+  background-color: #059669 !important;
+}
+html[data-theme="emerald"] .hover\:bg-indigo-700:hover {
+  background-color: #047857 !important;
+}
+html[data-theme="emerald"] .text-indigo-600,
+html[data-theme="emerald"] .text-indigo-700 {
+  color: #059669 !important;
+}
+html[data-theme="emerald"] .border-indigo-600 {
+  border-color: #059669 !important;
+}
+html[data-theme="emerald"] .bg-indigo-50 {
+  background-color: #ecfdf5 !important;
+  color: #065f46 !important;
+}
+
+/* Royal Violet Theme */
+html[data-theme="violet"] .bg-indigo-600 {
+  background-color: #7c3aed !important;
+}
+html[data-theme="violet"] .hover\:bg-indigo-700:hover {
+  background-color: #6d28d9 !important;
+}
+html[data-theme="violet"] .text-indigo-600,
+html[data-theme="violet"] .text-indigo-700 {
+  color: #7c3aed !important;
+}
+html[data-theme="violet"] .border-indigo-600 {
+  border-color: #7c3aed !important;
+}
+html[data-theme="violet"] .bg-indigo-50 {
+  background-color: #f5f3ff !important;
+  color: #5b21b6 !important;
 }

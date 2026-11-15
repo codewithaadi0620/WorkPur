@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { metaApi } from '../services/api';
 import { 
   Briefcase, 
@@ -13,14 +14,17 @@ import {
   Search,
   Menu,
   X,
-  ShieldAlert
+  ShieldAlert,
+  Palette
 } from 'lucide-react';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout, isClient, isFreelancer, isAdmin } = useAuth();
+  const { theme, switchTheme, themes } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -115,6 +119,51 @@ export default function Navbar() {
 
           {/* Right Section / Auth Controls */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Theme Selector Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShowThemeMenu(!showThemeMenu)}
+                className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center gap-1.5 transition-colors border border-transparent hover:border-slate-200"
+                title="Switch UI Theme"
+              >
+                <Palette className="w-4 h-4 text-indigo-600" />
+                <span className="text-xs font-semibold hidden xl:inline capitalize">
+                  {themes.find((t) => t.id === theme)?.name.split(' ')[0]}
+                </span>
+              </button>
+
+              {showThemeMenu && (
+                <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="px-3 py-1.5 border-b border-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Select Theme
+                  </div>
+                  {themes.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => {
+                        switchTheme(t.id);
+                        setShowThemeMenu(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2 text-xs font-medium transition-colors ${
+                        theme === t.id
+                          ? 'bg-indigo-50 text-indigo-700 font-bold'
+                          : 'text-slate-700 hover:bg-slate-50'
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{t.icon}</span>
+                        <span>{t.name}</span>
+                      </span>
+                      <span
+                        className="w-3 h-3 rounded-full border border-slate-300"
+                        style={{ backgroundColor: t.color }}
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {isAuthenticated ? (
               <>
                 {/* Client Quick Action: Post Project */}
@@ -298,6 +347,32 @@ export default function Navbar() {
               </Link>
             </div>
           )}
+
+          {/* Mobile Theme Selector */}
+          <div className="pt-3 border-t border-slate-200">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block px-3 mb-2">
+              Select UI Theme
+            </span>
+            <div className="grid grid-cols-2 gap-2 px-3">
+              {themes.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    switchTheme(t.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
+                    theme === t.id
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-bold'
+                      : 'border-slate-200 bg-white text-slate-700'
+                  }`}
+                >
+                  <span>{t.icon}</span>
+                  <span>{t.name.split(' ')[0]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </header>

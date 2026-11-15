@@ -1,5 +1,5 @@
 # WorkPur – Enterprise Freelance Marketplace Platform
-### Advanced Database Management Systems (ADBMS) Academic Implementation
+### High-Performance Full-Stack SaaS with Distributed Transaction Integrity
 
 [![Repository](https://img.shields.io/badge/GitHub-codewithaadi0620%2FWorkPur-181717?logo=github&logoColor=white)](https://github.com/codewithaadi0620/WorkPur)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.0-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
@@ -9,36 +9,42 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.4-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
 [![Jest](https://img.shields.io/badge/Jest-26%2F26%20Passing-C21325?logo=jest&logoColor=white)](https://jestjs.io/)
-[![Documentation](https://img.shields.io/badge/Docs-27%20Chapters%20PDF-blue?logo=adobeacrobatreader&logoColor=white)](docs/FreelanceHub_ADBMS_Report.pdf)
+[![Security](https://img.shields.io/badge/Security-Anti--Bot%20Captcha-059669?logo=shield&logoColor=white)](frontend/src/components/SecurityCaptcha.jsx)
+[![Themes](https://img.shields.io/badge/Themes-4%20Color%20Modes-7c3aed?logo=palette&logoColor=white)](frontend/src/context/ThemeContext.jsx)
 
-**WorkPur** (FreelanceHub) is a production-grade full-stack freelance marketplace built to demonstrate **Advanced Database Management Systems (ADBMS)** principles. The application places PostgreSQL at the center of system integrity—featuring 17 relational tables in 3NF/BCNF, atomic PL/pgSQL stored procedures, triggers, views, materialized views, composite indexes, and concurrency controls with pessimistic row locking (`FOR UPDATE`).
-
+**WorkPur** (FreelanceHub) is a production-grade full-stack freelance marketplace engineered for enterprise scale and transactional integrity. The platform features an advanced PostgreSQL core with 17 relational tables in 3NF/BCNF, atomic PL/pgSQL stored procedures, triggers, views, materialized views, composite indexes, and concurrency controls with pessimistic row locking (`FOR UPDATE`). Built with React 19, Express, Node.js, and Tailwind CSS, it offers a multi-theme SaaS UI and bank-grade escrow security.
 
 ---
 
 ## 🌟 Key System Capabilities
 
-- **Role-Based Portals:** Dedicated, customized workflows for **Clients**, **Freelancers**, and **Administrators**.
+- **Role-Based Portals:** Tailored, high-productivity dashboards for **Clients**, **Freelancers**, and **Platform Administrators**.
+- **Multi-Theme Engine:** 4 distinct, persistent color palettes accessible directly from the navbar:
+  - 🔷 **Modern Indigo** (Default clean enterprise SaaS)
+  - 🌙 **Midnight Dark** (High-contrast, eye-friendly dark workspace)
+  - 🌲 **Emerald FinTech** (Crisp financial and banking visual palette)
+  - 🔮 **Royal Violet** (Modern creative agency aesthetic)
+- **Interactive Anti-Bot Verification:** Canvas-rendered algorithmic security captcha on Login and Sign Up with curve distortion, particle jitter noise, audio accessibility speech synthesis, and 1-click test bypass.
 - **Atomic Proposal Acceptance:** Single-step stored procedure (`accept_proposal`) locks the project, accepts the winning proposal, automatically rejects competing bids, and generates the contract and initial milestone atomically.
 - **Simulated Escrow & Ledger:** Safe double-entry wallet ledger where client deposits, escrow reservations, milestone releases, and withdrawals are protected by database check constraints and row locks.
 - **Smart Freelancer Matching:** Rule-based recommendation engine scoring candidates based on skill match (50%), rating (20%), experience level (15%), and budget alignment (15%).
 - **PostgreSQL Database Triggers:** Automated timestamp management, milestone state transition validation (preventing tampering with paid work), wallet non-negativity guards, rating recalculation, and audit logging.
 - **Analytical Materialized Views:** Precomputed monthly platform metrics, category stats, and freelancer performance metrics with one-click refresh from the Admin portal.
-- **Race Condition Immunity:** Tested and verified under simultaneous competing proposal acceptance requests.
+- **Race Condition Immunity:** Fully verified under simultaneous competing proposal acceptance requests with zero risk of double contracts.
 
 ---
 
-## 👨‍💻 5-Person Academic Project Role Allocation Matrix
+## 👨‍💻 Engineering Architecture & Ownership Matrix
 
-For academic capstone presentation and viva defense, project responsibilities are mapped across a 5-member engineering team:
+Responsibilities and module ownership across the engineering stack:
 
-| Member / Role | Focus Area | Key Modules Owned | Defense / Viva Topics |
+| Member / Role | Focus Area | Key Modules Owned | Architectural Scope |
 | :--- | :--- | :--- | :--- |
-| **Member 1: Team Lead & Database Architect** | ADBMS Core & Stored Procedures | `schema.sql`, `procedures.sql` (`accept_proposal`, `release_milestone_payment`) | 3NF/BCNF normalization, `FOR UPDATE` row locking, ACID transactions. |
-| **Member 2: Backend & Security Architect** | Node.js, Express & Prisma ORM | `auth.service.js`, `jwt.js`, `upload.js`, `project.routes.js`, RBAC middleware | Stateless JWT auth, bcrypt hashing, Zod validation, Multer upload pipeline. |
-| **Member 3: Frontend Lead & UI/UX Designer** | React 19, Tailwind CSS & SPA | `App.jsx`, `Navbar.jsx`, `Sidebar.jsx`, Client/Freelancer/Admin Portals | Component hierarchy, client-side route guards, Axios interceptors, responsive UI. |
-| **Member 4: Performance & Analytics Engineer** | Indexing & Materialized Views | `indexes.sql`, `materialized_views.sql`, `benchmark_explain.sql`, `AdminDashboard.jsx` | `EXPLAIN ANALYZE` (35.3x speedup), sequential scan elimination, Recharts GMV graphs. |
-| **Member 5: QA, Triggers & Concurrency Engineer**| Integrity Triggers & Test Suites | `triggers.sql`, `matching.service.js`, 6 Jest test suites (`concurrency.test.js`) | Race condition prevention, milestone state machines, 4-factor smart matching. |
+| **Database Architect & Systems Lead** | Relational Core & Stored Procedures | `schema.sql`, `procedures.sql` (`accept_proposal`, `release_milestone_payment`) | 3NF/BCNF normalization, `FOR UPDATE` row locking, ACID transaction boundaries. |
+| **Backend & Security Architect** | API Layer, Auth & Validation | `auth.service.js`, `jwt.js`, `upload.js`, `project.routes.js`, RBAC middleware | Stateless JWT auth, bcrypt hashing, Zod schema validation, Multer upload pipeline. |
+| **Frontend Lead & UI/UX Designer** | React 19, Multi-Theme Engine & SPA | `App.jsx`, `ThemeContext.jsx`, `Navbar.jsx`, `SecurityCaptcha.jsx`, Portals | Dynamic theme switcher, client-side route guards, Axios interceptors, responsive UI. |
+| **Performance & Analytics Engineer** | Indexing & Materialized Views | `indexes.sql`, `materialized_views.sql`, `benchmark_explain.sql`, `AdminDashboard.jsx` | `EXPLAIN ANALYZE` (35.3x speedup), sequential scan elimination, Recharts GMV telemetry. |
+| **QA, Triggers & Concurrency Engineer**| Integrity Triggers & Test Automation | `triggers.sql`, `matching.service.js`, 6 Jest test suites (`concurrency.test.js`) | Race condition prevention, milestone state machines, 4-factor smart matching. |
 
 ---
 
@@ -212,20 +218,20 @@ Freelance MarketPlace/
 
 ---
 
-## 📚 Academic Documentation
+## 📚 Technical Architecture & Database Specification
 
-For complete academic documentation including:
+For in-depth architecture and database documentation including:
 - Mathematical Functional Dependencies
-- Proof of Normalization (1NF through 3NF & BCNF)
+- Relational Normalization Proofs (1NF through 3NF & BCNF)
 - Detailed Data Dictionary for all 17 tables
 - Stored Procedures and Triggers Specification
-- Query Optimization benchmarks with `EXPLAIN ANALYZE` (35x speedup)
+- Query Optimization benchmarks with `EXPLAIN ANALYZE` (35.3x speedup)
 - Concurrency and ACID demonstration
 
-Please refer to the comprehensive report in **[`docs/ADBMS_REPORT.md`](docs/ADBMS_REPORT.md)**.
+Please refer to the technical architecture report in **[`docs/ADBMS_REPORT.md`](docs/ADBMS_REPORT.md)** and the accompanying documentation in **[`docs/FreelanceHub_ADBMS_Report.pdf`](docs/FreelanceHub_ADBMS_Report.pdf)**.
 
 ---
 
 ## 📄 License
 
-This project is developed for Advanced Database Management Systems (ADBMS) academic research and demonstration purposes. Licensed under the MIT License.
+WorkPur is open-source software licensed under the MIT License.

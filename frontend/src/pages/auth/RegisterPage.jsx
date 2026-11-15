@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import SecurityCaptcha from '../../components/SecurityCaptcha';
 import { Briefcase, Lock, Mail, User, Building, DollarSign, CheckCircle2 } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -12,12 +13,17 @@ export default function RegisterPage() {
   const [title, setTitle] = useState('');
   const [hourlyRate, setHourlyRate] = useState(65);
   const [loading, setLoading] = useState(false);
+  const captchaRef = useRef(null);
 
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!captchaRef.current?.validate()) {
+      return;
+    }
+
     try {
       setLoading(true);
       const user = await register({
@@ -36,6 +42,7 @@ export default function RegisterPage() {
         navigate('/freelancer', { replace: true });
       }
     } catch (err) {
+      captchaRef.current?.refresh();
       // handled by AuthContext toast
     } finally {
       setLoading(false);
@@ -190,6 +197,9 @@ export default function RegisterPage() {
                 </div>
               </div>
             )}
+
+            {/* Anti-Bot Security Captcha */}
+            <SecurityCaptcha ref={captchaRef} />
 
             <button
               type="submit"
