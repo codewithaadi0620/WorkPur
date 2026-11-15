@@ -28,7 +28,22 @@
 
 ---
 
+## 👨‍💻 5-Person Academic Project Role Allocation Matrix
+
+For academic capstone presentation and viva defense, project responsibilities are mapped across a 5-member engineering team:
+
+| Member / Role | Focus Area | Key Modules Owned | Defense / Viva Topics |
+| :--- | :--- | :--- | :--- |
+| **Member 1: Team Lead & Database Architect** | ADBMS Core & Stored Procedures | `schema.sql`, `procedures.sql` (`accept_proposal`, `release_milestone_payment`) | 3NF/BCNF normalization, `FOR UPDATE` row locking, ACID transactions. |
+| **Member 2: Backend & Security Architect** | Node.js, Express & Prisma ORM | `auth.service.js`, `jwt.js`, `upload.js`, `project.routes.js`, RBAC middleware | Stateless JWT auth, bcrypt hashing, Zod validation, Multer upload pipeline. |
+| **Member 3: Frontend Lead & UI/UX Designer** | React 19, Tailwind CSS & SPA | `App.jsx`, `Navbar.jsx`, `Sidebar.jsx`, Client/Freelancer/Admin Portals | Component hierarchy, client-side route guards, Axios interceptors, responsive UI. |
+| **Member 4: Performance & Analytics Engineer** | Indexing & Materialized Views | `indexes.sql`, `materialized_views.sql`, `benchmark_explain.sql`, `AdminDashboard.jsx` | `EXPLAIN ANALYZE` (35.3x speedup), sequential scan elimination, Recharts GMV graphs. |
+| **Member 5: QA, Triggers & Concurrency Engineer**| Integrity Triggers & Test Suites | `triggers.sql`, `matching.service.js`, 6 Jest test suites (`concurrency.test.js`) | Race condition prevention, milestone state machines, 4-factor smart matching. |
+
+---
+
 ## 👥 Demo Accounts (Pre-Seeded)
+
 
 All demo accounts share the password: `password123`
 

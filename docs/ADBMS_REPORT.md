@@ -31,6 +31,7 @@
 25. [User Interface Walkthrough & Demonstrations](#25-user-interface-walkthrough--demonstrations)
 26. [Conclusion](#26-conclusion)
 27. [Future Scope & Production Hardening](#27-future-scope--production-hardening)
+28. [Project Team Roles & Responsibility Matrix (5-Person Group Allocation)](#28-project-team-roles--responsibility-matrix-5-person-group-allocation)
 
 ---
 
@@ -946,3 +947,64 @@ FreelanceHub demonstrates that modern web applications can combine developer pro
 2. **Table Partitioning:** Implement declarative range partitioning on `wallet_transactions` and `audit_logs` based on `created_at` (e.g., quarterly partitions) for long-term scalability.
 3. **Real-time WebSockets:** Integrate PostgreSQL `LISTEN / NOTIFY` channels with Node.js to deliver push notifications on milestone status updates.
 4. **Bi-directional Escrow Dispute System:** Implement multi-signature dispute resolution procedures enabling admin arbitration and automated split refunds.
+
+---
+
+## 28. Project Team Roles & Responsibility Matrix (5-Person Group Allocation)
+
+For academic evaluation, capstone defense, and technical viva presentations, project responsibilities are formally structured across a 5-member engineering team:
+
+### Member 1: Team Lead & Principal Database Architect (ADBMS Core Specialist)
+- **Primary Ownership:**
+  - Conceptual, logical, and physical database modeling (1NF $\to$ 2NF $\to$ 3NF / BCNF).
+  - PostgreSQL Relational Schema (`backend/database/schema.sql`): 17 tables, foreign keys with explicit cascade behaviors, unique constraints, and domain check constraints.
+  - Stored Procedures Architecture (`backend/database/procedures.sql`):
+    - `accept_proposal(p_proposal_id, p_client_id)`: Atomic project lock (`FOR UPDATE`), winning bid acceptance, competing bids auto-rejection, contract and milestone creation.
+    - `release_milestone_payment(p_milestone_id, p_client_id)`: Multi-party row locking, escrow transfer, dual ledger entries.
+    - `complete_contract(p_contract_id, p_client_id)` & `suspend_user(p_user_id, p_admin_id, p_reason)`.
+- **Key Deliverables:** `schema.sql`, `procedures.sql`, mathematical normalization proofs (Chapters 10–15).
+- **Viva Defense Focus:** Explaining 3NF/BCNF dependencies, deadlock prevention in multi-wallet row locking, and transactional atomicity.
+
+### Member 2: Senior Backend Engineer & API Architect
+- **Primary Ownership:**
+  - Express.js Modular Monolithic architecture (`backend/src/app.js`, `server.js`).
+  - Security, Authentication & Session Layer: Salted bcrypt password hashing, stateless JWT issuance, and Role-Based Access Control (RBAC middleware: `authenticate.js`, `authorize.js`).
+  - Prisma ORM & Native `pg.Pool` Integration: Introspection, schema generation, and parameterized raw SQL execution preventing injection attacks.
+  - File Upload Pipeline: Multer disk storage middleware (`upload.js`), file sanitization, and `project_attachments` metadata endpoints (`upload.routes.js`).
+- **Key Deliverables:** `backend/src/app.js`, `auth.service.js`, `upload.routes.js`, `project.service.js`, `proposal.service.js`.
+- **Viva Defense Focus:** JWT verification lifecycle, Prisma transaction boundaries vs raw database transactions, and request validation with Zod.
+
+### Member 3: Frontend Lead & UI/UX Systems Designer
+- **Primary Ownership:**
+  - React 19 Single Page Application architecture (`frontend/src/App.jsx`, `main.jsx`).
+  - Tailwind CSS custom design system: Modern Indigo/Violet SaaS palette, dark/light surface contrast, responsive cards, and clean typography.
+  - Role-Dedicated User Portals:
+    - **Client Portal:** Dashboard metrics, project posting with multi-skill chips, proposal review, and milestone escrow release.
+    - **Freelancer Portal:** Project discovery with search/filters, proposal submission modal, deliverables submission, and wallet withdrawals.
+    - **Admin Portal:** User management table, project moderation, and taxonomy editors.
+  - Global Session State (`AuthContext.jsx`) & Centralized Axios Client (`api.js`) with request/response JWT interceptors.
+- **Key Deliverables:** `frontend/src/pages/`, `components/Navbar.jsx`, `components/Sidebar.jsx`, `context/AuthContext.jsx`.
+- **Viva Defense Focus:** React component hierarchy, client-side route protection (`ProtectedRoute.jsx`), and seamless state synchronization with backend APIs.
+
+### Member 4: Database Performance, Indexing & Analytics Engineer
+- **Primary Ownership:**
+  - Physical Database Design & Indexing Strategy (`backend/database/indexes.sql`): B-Tree indexes on foreign keys, composite indexes on filter dimensions (`projects(category_id, status)`).
+  - Query Optimization Benchmarks (`backend/database/benchmark_explain.sql`): `EXPLAIN ANALYZE` evaluation demonstrating **35.3x query acceleration** (from 14.85 ms to 0.42 ms) by eliminating sequential table scans.
+  - PostgreSQL Materialized Views Pipeline (`backend/database/materialized_views.sql`): Precomputing heavy analytical aggregates (`monthly_platform_analytics`, `project_category_statistics`) with asynchronous refresh procedures.
+  - Recharts Visualizations (`frontend/src/pages/admin/AdminDashboard.jsx`): Interactive area charts for monthly GMV volume and horizontal bar charts for category distribution.
+- **Key Deliverables:** `indexes.sql`, `materialized_views.sql`, `benchmark_explain.sql`, `analytics.service.js`, `AdminDashboard.jsx`.
+- **Viva Defense Focus:** Interpreting query execution plans (`EXPLAIN ANALYZE`), cost calculation, sequential scan elimination, and OLTP vs OLAP workload isolation.
+
+### Member 5: QA, Security & Transaction Concurrency Engineer
+- **Primary Ownership:**
+  - Automated Integration Testing Framework (`backend/tests/`): 6 comprehensive test suites covering 26 automated integration tests using Jest and Supertest.
+  - High-Concurrency Race Condition Verification (`concurrency.test.js`): Simulating simultaneous acceptance of competing proposals on the same project to prove PostgreSQL `SELECT FOR UPDATE` locks guarantee that exactly one transaction succeeds while competitors fail cleanly.
+  - Integrity Triggers & State Machines (`backend/database/triggers.sql`):
+    - `validate_milestone_transition`: State machine trigger enforcing non-reversible `PAID` milestone status.
+    - `validate_wallet_balances`: Database-level non-negativity trigger blocking overdraft balances before disk write.
+    - `sync_freelancer_rating`: Trigger updating arithmetic mean and review count.
+    - `audit_user_status`: Automated event trigger logging status changes into `audit_logs`.
+  - Rule-Based Smart Freelancer Matching Engine (`matching.service.js`): 4-factor scoring algorithm (Skills 50%, Rating 20%, Experience 15%, Budget 15%).
+- **Key Deliverables:** `backend/tests/` (26 tests), `triggers.sql`, `matching.service.js`, `concurrency.test.js`.
+- **Viva Defense Focus:** Race condition demonstration, isolation levels, database triggers vs application validation, and double-entry financial ledger integrity.
+
