@@ -1,6 +1,5 @@
 -- ============================================================================
 -- FreelanceHub Database Seed Data (ADBMS Module)
--- Realistic Demonstration Dataset for ADBMS Evaluation
 -- Default password for all seed accounts: password123
 -- Hash: $2b$10$ox44ixTFUDGJpJ/V/kIySuzk6YvTQBz2MXt5ra9kWxm4PsddBp6iC
 -- ============================================================================

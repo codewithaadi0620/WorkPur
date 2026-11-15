@@ -45,7 +45,16 @@ export const createMilestoneSchema = z.object({
 });
 
 export const submitMilestoneSchema = z.object({
-  submissionNotes: z.string().min(10, 'Submission notes must be at least 10 characters'),
+  submissionNotes: z.string().optional(),
+  notes: z.string().optional(),
+  githubRepo: z.string().optional(),
+  repoUrl: z.string().optional(),
+}).refine((data) => {
+  const content = (data.submissionNotes || data.notes || data.githubRepo || data.repoUrl || '').trim();
+  return content.length >= 3;
+}, {
+  message: 'Please provide deliverable notes, description, or repository URL (minimum 3 characters)',
+  path: ['submissionNotes'],
 });
 
 export const reviewSchema = z.object({

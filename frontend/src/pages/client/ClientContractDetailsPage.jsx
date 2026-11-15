@@ -14,8 +14,35 @@ import {
   ShieldCheck, 
   FileText,
   Star,
-  Send
+  Send,
+  Github,
+  ExternalLink
 } from 'lucide-react';
+
+function renderSubmissionNotes(text) {
+  if (!text) return null;
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      const isGitHub = part.includes('github.com');
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-600 hover:text-indigo-800 underline font-semibold break-all inline-flex items-center gap-1 mx-0.5"
+        >
+          {isGitHub && <Github className="w-3.5 h-3.5 inline shrink-0" />}
+          <span>{part}</span>
+          <ExternalLink className="w-3 h-3 inline shrink-0" />
+        </a>
+      );
+    }
+    return part;
+  });
+}
 
 export default function ClientContractDetailsPage() {
   const { id } = useParams();
@@ -381,8 +408,10 @@ export default function ClientContractDetailsPage() {
                   {/* Submission Notes */}
                   {m.submission_notes && (
                     <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs">
-                      <span className="font-bold text-slate-600 block mb-1">Freelancer Submission Notes:</span>
-                      <p className="text-slate-700 whitespace-pre-line">{m.submission_notes}</p>
+                      <span className="font-bold text-slate-600 block mb-1">Freelancer Submission Notes & Deliverables:</span>
+                      <div className="text-slate-700 whitespace-pre-line leading-relaxed">
+                        {renderSubmissionNotes(m.submission_notes)}
+                      </div>
                     </div>
                   )}
 

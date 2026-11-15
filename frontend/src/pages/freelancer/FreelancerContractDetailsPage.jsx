@@ -15,8 +15,35 @@ import {
   ArrowLeft,
   Star,
   Info,
+  Github,
+  ExternalLink,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+function renderSubmissionNotes(text) {
+  if (!text) return null;
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      const isGitHub = part.includes('github.com');
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-600 hover:text-indigo-800 underline font-semibold break-all inline-flex items-center gap-1 mx-0.5"
+        >
+          {isGitHub && <Github className="w-3.5 h-3.5 inline shrink-0" />}
+          <span>{part}</span>
+          <ExternalLink className="w-3 h-3 inline shrink-0" />
+        </a>
+      );
+    }
+    return part;
+  });
+}
 
 export default function FreelancerContractDetailsPage() {
   const { id } = useParams();
@@ -27,6 +54,7 @@ export default function FreelancerContractDetailsPage() {
   // Submit deliverable modal state
   const [activeMilestone, setActiveMilestone] = useState(null);
   const [submissionNotes, setSubmissionNotes] = useState('');
+  const [githubUrl, setGithubUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Review modal
@@ -53,24 +81,33 @@ export default function FreelancerContractDetailsPage() {
   const handleOpenSubmitModal = (milestone) => {
     setActiveMilestone(milestone);
     setSubmissionNotes('');
+    setGithubUrl('');
   };
 
   const handleSubmitDeliverable = async (e) => {
     e.preventDefault();
-    if (!submissionNotes.trim()) {
-      toast.error('Please enter delivery notes describing your completed work.');
+    const repo = githubUrl.trim();
+    const notes = submissionNotes.trim();
+
+    if (!repo && !notes) {
+      toast.error('Please enter delivery notes or your GitHub repository URL.');
       return;
     }
+
+    const combined = repo && notes ? `${notes}\n\nRepository: ${repo}` : (repo || notes);
 
     try {
       setIsSubmitting(true);
       const res = await contractsApi.submitWork(activeMilestone.id, {
-        notes: submissionNotes,
+        submissionNotes: combined,
+        notes: combined,
+        githubRepo: repo,
       });
       if (res.success) {
         toast.success('Work deliverable submitted to client successfully!');
         setActiveMilestone(null);
         setSubmissionNotes('');
+        setGithubUrl('');
         fetchContract();
       }
     } catch (err) {
@@ -79,6 +116,7 @@ export default function FreelancerContractDetailsPage() {
       setIsSubmitting(false);
     }
   };
+
 
   if (loading) {
     return (
@@ -264,7 +302,9 @@ export default function FreelancerContractDetailsPage() {
                       <p className="font-semibold text-slate-500 uppercase tracking-wider mb-1">
                         Latest Submission Note
                       </p>
-                      <p className="text-slate-700 italic">{m.submission_notes}</p>
+                      <div className="text-slate-700 whitespace-pre-line leading-relaxed">
+                        {renderSubmissionNotes(m.submission_notes)}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -287,17 +327,36 @@ export default function FreelancerContractDetailsPage() {
 
             <form onSubmit={handleSubmitDeliverable} className="mt-5 space-y-4">
               <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <Github className="w-3.5 h-3.5 text-slate-700" />
+                  GitHub Repository / Deliverable URL (Optional)
+                </label>
+                <input
+                  type="url"
+                  value={githubUrl}
+                  onChange={(e) => setGithubUrl(e.target.value)}
+                  placeholder="https://github.com/username/repository"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-slate-800"
+                />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Direct link to your Git repository, branch, PR, or deliverable.
+                </p>
+              </div>
+
+              <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Submission Notes & Deliverable Links
+                  Submission Notes & Deliverable Details
                 </label>
                 <textarea
                   rows={4}
-                  required
                   value={submissionNotes}
                   onChange={(e) => setSubmissionNotes(e.target.value)}
-                  placeholder="e.g. Completed initial database schema and API integration. Staged at github.com/... and ready for review."
+                  placeholder="Describe the completed work, testing results, or specific instructions for the client..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-slate-800"
                 ></textarea>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Provide either a GitHub URL, submission notes, or both.
+                </p>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-3">

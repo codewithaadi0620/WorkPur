@@ -24,8 +24,18 @@ export async function fundEscrow(req, res, next) {
 
 export async function submitWork(req, res, next) {
   try {
-    const { submissionNotes } = req.body;
-    const milestone = await milestoneService.submitMilestoneWork(req.user.id, req.params.id, submissionNotes);
+    const { submissionNotes, notes, githubRepo, repoUrl } = req.body;
+    let finalNotes = '';
+    const repo = (githubRepo || repoUrl || '').trim();
+    const descriptiveNotes = (submissionNotes || notes || '').trim();
+
+    if (repo && descriptiveNotes && !descriptiveNotes.includes(repo)) {
+      finalNotes = `${descriptiveNotes}\n\nRepository: ${repo}`;
+    } else {
+      finalNotes = descriptiveNotes || repo || 'Deliverable submitted for review.';
+    }
+
+    const milestone = await milestoneService.submitMilestoneWork(req.user.id, req.params.id, finalNotes);
     res.status(200).json({
       success: true,
       message: 'Milestone work submitted for client review.',
