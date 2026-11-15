@@ -1,0 +1,10 @@
+node_modules/
+postgres_data/
+.env
+.env.*
+!.env.example
+dist/
+coverage/
+*.log
+.vscode/
+.DS_Store

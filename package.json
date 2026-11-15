@@ -1,0 +1,31 @@
+{
+  "name": "freelancehub-root",
+  "version": "1.0.0",
+  "description": "FreelanceHub - Advanced Database Management Systems (ADBMS) Marketplace Platform",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start:db": "powershell -ExecutionPolicy Bypass -File .\\start-db.ps1",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "start:backend": "npm --prefix backend start",
+    "build:frontend": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test",
+    "seed": "npm --prefix backend run seed",
+    "init:db": "npm --prefix backend run db:init",
+    "pdf": "node scripts/generate_pdf.js"
+  },
+  "keywords": [
+    "adbms",
+    "postgresql",
+    "prisma",
+    "express",
+    "react",
+    "freelance-marketplace",
+    "stored-procedures",
+    "triggers",
+    "materialized-views"
+  ],
+  "author": "FreelanceHub Engineering Team",
+  "license": "MIT"
+}

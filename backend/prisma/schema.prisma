@@ -1,0 +1,310 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model audit_logs {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id     String?  @db.Uuid
+  action      String   @db.VarChar(100)
+  entity_name String   @db.VarChar(100)
+  entity_id   String?  @db.VarChar(100)
+  details     Json?
+  ip_address  String?  @db.VarChar(50)
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  users       users?   @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+
+  @@index([entity_name, entity_id], map: "idx_audit_logs_entity")
+  @@index([user_id], map: "idx_audit_logs_user_id")
+}
+
+model categories {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String     @unique @db.VarChar(100)
+  description String?
+  slug        String     @unique @db.VarChar(100)
+  created_at  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime   @default(now()) @db.Timestamptz(6)
+  projects    projects[]
+  skills      skills[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model client_profiles {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id         String   @unique @db.Uuid
+  company_name    String?  @db.VarChar(150)
+  website         String?  @db.VarChar(255)
+  billing_address String?
+  total_spent     Decimal  @default(0.00) @db.Decimal(14, 2)
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime @default(now()) @db.Timestamptz(6)
+  users           users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model contracts {
+  id                                   String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  project_id                           String       @unique @db.Uuid
+  client_id                            String       @db.Uuid
+  freelancer_id                        String       @db.Uuid
+  proposal_id                          String       @unique @db.Uuid
+  agreed_amount                        Decimal      @db.Decimal(12, 2)
+  start_date                           DateTime     @default(now()) @db.Timestamptz(6)
+  end_date                             DateTime?    @db.Timestamptz(6)
+  status                               String       @default("ACTIVE") @db.VarChar(30)
+  created_at                           DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at                           DateTime     @default(now()) @db.Timestamptz(6)
+  users_contracts_client_idTousers     users        @relation("contracts_client_idTousers", fields: [client_id], references: [id], onUpdate: NoAction)
+  users_contracts_freelancer_idTousers users        @relation("contracts_freelancer_idTousers", fields: [freelancer_id], references: [id], onUpdate: NoAction)
+  projects                             projects     @relation(fields: [project_id], references: [id], onUpdate: NoAction)
+  proposals                            proposals    @relation(fields: [proposal_id], references: [id], onUpdate: NoAction)
+  milestones                           milestones[]
+  reviews                              reviews[]
+
+  @@index([client_id], map: "idx_contracts_client_id")
+  @@index([freelancer_id], map: "idx_contracts_freelancer_id")
+  @@index([project_id], map: "idx_contracts_project_id")
+  @@index([status], map: "idx_contracts_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model freelancer_profiles {
+  id                       String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                  String              @unique @db.Uuid
+  title                    String              @default("Freelancer") @db.VarChar(150)
+  bio                      String?
+  hourly_rate              Decimal             @default(0.00) @db.Decimal(10, 2)
+  experience_level         String              @default("INTERMEDIATE") @db.VarChar(30)
+  portfolio_url            String?             @db.VarChar(255)
+  availability             String              @default("AVAILABLE") @db.VarChar(30)
+  total_earnings           Decimal             @default(0.00) @db.Decimal(14, 2)
+  average_rating           Decimal             @default(0.00) @db.Decimal(3, 2)
+  completed_projects_count Int                 @default(0)
+  created_at               DateTime            @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime            @default(now()) @db.Timestamptz(6)
+  users                    users               @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  freelancer_skills        freelancer_skills[]
+
+  @@index([experience_level, average_rating(sort: Desc)], map: "idx_freelancer_profiles_exp_rating")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model freelancer_skills {
+  id                  String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  freelancer_id       String              @db.Uuid
+  skill_id            String              @db.Uuid
+  proficiency_level   String              @default("INTERMEDIATE") @db.VarChar(30)
+  years_experience    Decimal?            @default(1.0) @db.Decimal(4, 1)
+  created_at          DateTime            @default(now()) @db.Timestamptz(6)
+  freelancer_profiles freelancer_profiles @relation(fields: [freelancer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  skills              skills              @relation(fields: [skill_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([freelancer_id, skill_id], map: "unique_freelancer_skill")
+  @@index([freelancer_id], map: "idx_freelancer_skills_freelancer_id")
+  @@index([skill_id], map: "idx_freelancer_skills_skill_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model milestones {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contract_id         String                @db.Uuid
+  title               String                @db.VarChar(200)
+  description         String?
+  amount              Decimal               @db.Decimal(12, 2)
+  due_date            DateTime?             @db.Timestamptz(6)
+  status              String                @default("PENDING") @db.VarChar(30)
+  submission_notes    String?
+  submitted_at        DateTime?             @db.Timestamptz(6)
+  approved_at         DateTime?             @db.Timestamptz(6)
+  paid_at             DateTime?             @db.Timestamptz(6)
+  created_at          DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime              @default(now()) @db.Timestamptz(6)
+  contracts           contracts             @relation(fields: [contract_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  wallet_transactions wallet_transactions[]
+
+  @@index([contract_id], map: "idx_milestones_contract_id")
+  @@index([status], map: "idx_milestones_status")
+}
+
+model notifications {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String   @db.Uuid
+  title      String   @db.VarChar(200)
+  message    String
+  is_read    Boolean  @default(false)
+  type       String   @default("SYSTEM") @db.VarChar(50)
+  link       String?
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model project_attachments {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  project_id String   @db.Uuid
+  file_name  String   @db.VarChar(255)
+  file_path  String
+  file_size  Int
+  mime_type  String   @db.VarChar(100)
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  projects   projects @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model project_skills {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  project_id String   @db.Uuid
+  skill_id   String   @db.Uuid
+  projects   projects @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  skills     skills   @relation(fields: [skill_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([project_id, skill_id], map: "unique_project_skill")
+  @@index([project_id], map: "idx_project_skills_project_id")
+  @@index([skill_id], map: "idx_project_skills_skill_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model projects {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  client_id           String                @db.Uuid
+  category_id         String                @db.Uuid
+  title               String                @db.VarChar(255)
+  description         String
+  project_type        String                @default("FIXED_PRICE") @db.VarChar(30)
+  experience_level    String                @default("INTERMEDIATE") @db.VarChar(30)
+  min_budget          Decimal               @db.Decimal(12, 2)
+  max_budget          Decimal               @db.Decimal(12, 2)
+  deadline            DateTime              @db.Timestamptz(6)
+  status              String                @default("OPEN") @db.VarChar(30)
+  created_at          DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime              @default(now()) @db.Timestamptz(6)
+  contracts           contracts?
+  project_attachments project_attachments[]
+  project_skills      project_skills[]
+  categories          categories            @relation(fields: [category_id], references: [id], onUpdate: NoAction)
+  users               users                 @relation(fields: [client_id], references: [id], onUpdate: NoAction)
+  proposals           proposals[]
+
+  @@index([category_id], map: "idx_projects_category_id")
+  @@index([category_id, status], map: "idx_projects_category_status")
+  @@index([client_id], map: "idx_projects_client_id")
+  @@index([deadline], map: "idx_projects_deadline")
+  @@index([status], map: "idx_projects_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model proposals {
+  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  project_id      String     @db.Uuid
+  freelancer_id   String     @db.Uuid
+  cover_letter    String
+  proposed_amount Decimal    @db.Decimal(12, 2)
+  estimated_days  Int
+  status          String     @default("PENDING") @db.VarChar(30)
+  created_at      DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime   @default(now()) @db.Timestamptz(6)
+  contracts       contracts?
+  users           users      @relation(fields: [freelancer_id], references: [id], onUpdate: NoAction)
+  projects        projects   @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([project_id, freelancer_id], map: "unique_active_freelancer_proposal")
+  @@index([freelancer_id], map: "idx_proposals_freelancer_id")
+  @@index([project_id], map: "idx_proposals_project_id")
+  @@index([project_id, status], map: "idx_proposals_project_status")
+  @@index([status], map: "idx_proposals_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model reviews {
+  id                               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contract_id                      String    @db.Uuid
+  reviewer_id                      String    @db.Uuid
+  reviewee_id                      String    @db.Uuid
+  rating                           Decimal   @db.Decimal(2, 1)
+  comment                          String?
+  created_at                       DateTime  @default(now()) @db.Timestamptz(6)
+  contracts                        contracts @relation(fields: [contract_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_reviews_reviewee_idTousers users     @relation("reviews_reviewee_idTousers", fields: [reviewee_id], references: [id], onUpdate: NoAction)
+  users_reviews_reviewer_idTousers users     @relation("reviews_reviewer_idTousers", fields: [reviewer_id], references: [id], onUpdate: NoAction)
+
+  @@unique([contract_id, reviewer_id], map: "unique_contract_reviewer")
+  @@index([contract_id], map: "idx_reviews_contract_id")
+  @@index([reviewee_id], map: "idx_reviews_reviewee_id")
+  @@index([reviewee_id, rating], map: "idx_reviews_reviewee_rating")
+  @@index([reviewer_id], map: "idx_reviews_reviewer_id")
+}
+
+model skills {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String              @unique @db.VarChar(100)
+  category_id       String?             @db.Uuid
+  created_at        DateTime            @default(now()) @db.Timestamptz(6)
+  freelancer_skills freelancer_skills[]
+  project_skills    project_skills[]
+  categories        categories?         @relation(fields: [category_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  id                                       String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                                     String               @db.VarChar(100)
+  email                                    String               @unique @db.VarChar(255)
+  password_hash                            String               @db.VarChar(255)
+  role                                     String               @db.VarChar(20)
+  status                                   String               @default("ACTIVE") @db.VarChar(20)
+  avatar_url                               String?
+  created_at                               DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at                               DateTime             @default(now()) @db.Timestamptz(6)
+  audit_logs                               audit_logs[]
+  client_profiles                          client_profiles?
+  contracts_contracts_client_idTousers     contracts[]          @relation("contracts_client_idTousers")
+  contracts_contracts_freelancer_idTousers contracts[]          @relation("contracts_freelancer_idTousers")
+  freelancer_profiles                      freelancer_profiles?
+  notifications                            notifications[]
+  projects                                 projects[]
+  proposals                                proposals[]
+  reviews_reviews_reviewee_idTousers       reviews[]            @relation("reviews_reviewee_idTousers")
+  reviews_reviews_reviewer_idTousers       reviews[]            @relation("reviews_reviewer_idTousers")
+  wallets                                  wallets?
+
+  @@index([email], map: "idx_users_email")
+  @@index([role], map: "idx_users_role")
+  @@index([status], map: "idx_users_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model wallet_transactions {
+  id               String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  wallet_id        String      @db.Uuid
+  transaction_type String      @db.VarChar(30)
+  amount           Decimal     @db.Decimal(14, 2)
+  description      String?
+  milestone_id     String?     @db.Uuid
+  reference_id     String?     @db.VarChar(100)
+  created_at       DateTime    @default(now()) @db.Timestamptz(6)
+  milestones       milestones? @relation(fields: [milestone_id], references: [id], onUpdate: NoAction)
+  wallets          wallets     @relation(fields: [wallet_id], references: [id], onUpdate: NoAction)
+
+  @@index([milestone_id], map: "idx_wallet_transactions_milestone")
+  @@index([transaction_type], map: "idx_wallet_transactions_type")
+  @@index([wallet_id, created_at(sort: Desc)], map: "idx_wallet_transactions_wallet_created")
+  @@index([wallet_id], map: "idx_wallet_transactions_wallet_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model wallets {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id             String                @unique @db.Uuid
+  available_balance   Decimal               @default(0.00) @db.Decimal(14, 2)
+  reserved_balance    Decimal               @default(0.00) @db.Decimal(14, 2)
+  created_at          DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime              @default(now()) @db.Timestamptz(6)
+  wallet_transactions wallet_transactions[]
+  users               users                 @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_wallets_user_id")
+}
