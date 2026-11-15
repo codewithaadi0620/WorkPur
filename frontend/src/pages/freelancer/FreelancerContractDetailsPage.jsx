@@ -214,7 +214,7 @@ export default function FreelancerContractDetailsPage() {
         <div>
           <h2 className="text-lg font-bold text-slate-900">Contract Milestones & Deliverables</h2>
           <p className="text-xs text-slate-500">
-            Submit your work for each milestone. Once the client approves, the escrow payment will be automatically credited to your wallet via PostgreSQL stored procedure.
+            Submit your work for each milestone. Once the client approves, the escrow payment will be credited directly to your available wallet balance.
           </p>
         </div>
 

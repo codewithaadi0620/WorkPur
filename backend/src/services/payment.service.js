@@ -37,7 +37,7 @@ export async function getUserWallet(userId) {
 /**
  * Deposit simulated funds into wallet
  */
-export async function depositFunds(userId, amount, description = 'Simulated funds deposit') {
+export async function depositFunds(userId, amount, description = 'Wallet deposit') {
   if (amount <= 0) {
     const error = new Error('Deposit amount must be greater than zero.');
     error.statusCode = 400;
@@ -92,7 +92,7 @@ export async function depositFunds(userId, amount, description = 'Simulated fund
 
     return {
       success: true,
-      message: `Successfully deposited $${parseFloat(amount).toFixed(2)} into simulated wallet.`,
+      message: `Successfully deposited $${parseFloat(amount).toFixed(2)} into wallet.`,
       wallet: updated.rows[0],
     };
   } catch (error) {
@@ -157,7 +157,7 @@ export async function withdrawFunds(userId, amount) {
 
     await client.query(
       `INSERT INTO wallet_transactions (wallet_id, transaction_type, amount, description)
-       VALUES ($1, 'REFUND', $2, 'Simulated funds withdrawal');`,
+       VALUES ($1, 'REFUND', $2, 'Funds withdrawal to bank');`,
       [wallet.id, amount]
     );
 

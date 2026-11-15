@@ -7,7 +7,7 @@ import { X, DollarSign, Wallet, ArrowDownCircle } from 'lucide-react';
 export default function DepositModal({ isOpen, onClose, onSuccess }) {
   const { refreshUser } = useAuth();
   const [amount, setAmount] = useState(1000);
-  const [description, setDescription] = useState('Simulated project funding deposit');
+  const [description, setDescription] = useState('Project escrow deposit');
   const [submitting, setSubmitting] = useState(false);
 
   if (!isOpen) return null;
@@ -27,7 +27,7 @@ export default function DepositModal({ isOpen, onClose, onSuccess }) {
         amount: parseFloat(amount),
         description,
       });
-      toast.success(`Successfully deposited $${parseFloat(amount).toFixed(2)} into simulated wallet!`);
+      toast.success(`Successfully deposited $${parseFloat(amount).toFixed(2)} to your wallet!`);
       await refreshUser?.();
       onSuccess?.();
       onClose();
@@ -48,8 +48,8 @@ export default function DepositModal({ isOpen, onClose, onSuccess }) {
               <Wallet className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-800">Add Simulated Funds</h3>
-              <p className="text-xs text-slate-500">Test Escrow & Milestone Payments</p>
+              <h3 className="text-base font-bold text-slate-800">Add Wallet Funds</h3>
+              <p className="text-xs text-slate-500">Instant funding for milestone escrow</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200">

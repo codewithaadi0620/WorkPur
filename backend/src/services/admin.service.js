@@ -63,7 +63,7 @@ export async function suspendUser(adminId, userId, reason) {
   });
   return {
     success: true,
-    message: 'User account suspended successfully via ADBMS stored procedure.',
+    message: 'User account suspended successfully.',
     user,
   };
 }

@@ -50,7 +50,7 @@ export default function LoginPage() {
             Welcome to FreelanceHub
           </h2>
           <p className="mt-1 text-xs text-slate-500">
-            Advanced Database Management Systems (ADBMS) Platform
+            Sign in to manage your projects, contracts, and talent
           </p>
         </div>
 
@@ -58,7 +58,7 @@ export default function LoginPage() {
         <div className="mt-6 bg-indigo-50/70 border border-indigo-200/80 rounded-2xl p-4">
           <div className="flex items-center gap-2 mb-2 text-indigo-900 font-semibold text-xs">
             <ShieldCheck className="w-4 h-4 text-indigo-600" />
-            <span>Academic Evaluation: One-Click Demo Credentials</span>
+            <span>Quick Demo Access: One-Click Test Accounts</span>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <button

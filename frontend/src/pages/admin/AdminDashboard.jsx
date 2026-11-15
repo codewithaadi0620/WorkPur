@@ -100,7 +100,7 @@ export default function AdminDashboard() {
     {
       title: 'Gross Platform GMV',
       value: `$${Number(overview.totalEscrowReleased || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-      sub: 'Total simulated volume released',
+      sub: 'Total contract volume disbursed',
       icon: DollarSign,
       color: 'bg-emerald-50 text-emerald-600 border-emerald-200',
     },
@@ -120,12 +120,12 @@ export default function AdminDashboard() {
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center gap-1">
-              <Database className="w-3.5 h-3.5" /> ADBMS PostgreSQL 18 Analytics
+              <Activity className="w-3.5 h-3.5" /> Real-Time Platform Analytics
             </span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mt-1">Platform Administrative Dashboard</h1>
           <p className="text-xs text-slate-500 mt-1">
-            Data aggregated via PostgreSQL 3NF normalized tables, analytical views, and materialized views.
+            Monitor platform GMV, user acquisition, project completion velocity, and financial health.
           </p>
         </div>
 
@@ -135,7 +135,7 @@ export default function AdminDashboard() {
           className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-2 disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-          {refreshing ? 'Refreshing Views...' : 'Refresh Materialized Views'}
+          {refreshing ? 'Syncing...' : 'Sync Analytics Cache'}
         </button>
       </div>
 

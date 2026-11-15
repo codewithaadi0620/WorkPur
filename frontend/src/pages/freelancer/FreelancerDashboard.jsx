@@ -107,7 +107,7 @@ export default function FreelancerDashboard() {
               className="px-5 py-2.5 bg-indigo-600/60 hover:bg-indigo-600 border border-indigo-400/40 text-white font-medium rounded-xl text-sm transition flex items-center gap-2"
             >
               <Wallet className="w-4 h-4" />
-              Simulated Wallet
+              Wallet & Earnings
             </Link>
           </div>
         </div>

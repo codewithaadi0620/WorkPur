@@ -89,7 +89,7 @@ export default function ProjectsPage() {
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Explore Freelance Projects</h1>
           <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Browse verified enterprise and startup contracts. Apply with structured proposals and execute milestones backed by simulated escrow protection.
+            Browse verified client opportunities. Submit proposals, deliver high-impact work, and receive secure milestone payments directly to your wallet.
           </p>
         </div>
       </div>

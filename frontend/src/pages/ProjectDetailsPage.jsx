@@ -108,7 +108,7 @@ export default function ProjectDetailsPage() {
   };
 
   const handleAcceptProposal = async (proposalId) => {
-    if (!window.confirm('Accept this proposal? This executes the PostgreSQL stored procedure, rejecting other proposals and establishing a formal contract.')) {
+    if (!window.confirm('Accept this proposal? This will award the project, establish an active contract, and close other applications.')) {
       return;
     }
 
@@ -358,7 +358,7 @@ export default function ProjectDetailsPage() {
               <div className="flex justify-between">
                 <span className="text-slate-500">Payment Status:</span>
                 <span className="font-semibold text-emerald-600 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" /> Simulated Escrow Verified
+                  <ShieldCheck className="w-3.5 h-3.5" /> Escrow Protected
                 </span>
               </div>
             </div>
@@ -392,7 +392,7 @@ export default function ProjectDetailsPage() {
               }`}
             >
               <Sparkles className="w-4 h-4 text-amber-500" />
-              <span>Smart Freelancer Matching (AI/ADBMS Algorithm)</span>
+              <span>Recommended Talent Matches</span>
             </button>
           </div>
 

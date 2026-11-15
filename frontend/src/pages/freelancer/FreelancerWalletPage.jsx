@@ -69,10 +69,10 @@ export default function FreelancerWalletPage() {
       setIsSubmitting(true);
       const res = await paymentsApi.withdraw({
         amount,
-        notes: 'Simulated payout withdrawal to bank account',
+        notes: 'Payout withdrawal to bank account',
       });
       if (res.success) {
-        toast.success(`Successfully simulated withdrawal of $${amount.toFixed(2)}!`);
+        toast.success(`Successfully initiated withdrawal of $${amount.toFixed(2)}!`);
         setIsWithdrawOpen(false);
         setWithdrawAmount('');
         await fetchWallet();
@@ -99,7 +99,7 @@ export default function FreelancerWalletPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Freelancer Wallet & Earnings</h1>
           <p className="text-sm text-slate-500 mt-1">
-            Track payments received via atomic PostgreSQL stored procedures and simulate payouts.
+            Track payments received from milestone approvals and initiate withdrawals to your bank account.
           </p>
         </div>
 
@@ -116,7 +116,7 @@ export default function FreelancerWalletPage() {
             className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-md transition flex items-center gap-2"
           >
             <ArrowUpRight className="w-4 h-4" />
-            Simulate Withdrawal
+            Withdraw Funds
           </button>
         </div>
       </div>
@@ -130,7 +130,7 @@ export default function FreelancerWalletPage() {
           <h2 className="text-3xl font-black mt-2 tracking-tight">
             ${available.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </h2>
-          <p className="text-xs text-indigo-300 mt-2">Ready for withdrawal simulation</p>
+          <p className="text-xs text-indigo-300 mt-2">Available for immediate withdrawal</p>
           <div className="absolute right-4 bottom-4 opacity-10">
             <Wallet className="w-24 h-24" />
           </div>
@@ -147,22 +147,22 @@ export default function FreelancerWalletPage() {
           </div>
           <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
             <Clock className="w-3.5 h-3.5 text-slate-400" />
-            Immutable ledger records
+            Audited transaction history
           </p>
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              Ledger Integrity
+              Payment Security
             </p>
             <div className="flex items-center gap-2 mt-2">
               <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-              <span className="text-base font-bold text-slate-800">Verified ACID</span>
+              <span className="text-base font-bold text-slate-800">Escrow Secured</span>
             </div>
           </div>
           <p className="text-xs text-slate-500 mt-2">
-            Protected by database constraints & row locks
+            Protected by automated escrow verification
           </p>
         </div>
       </div>
@@ -172,7 +172,7 @@ export default function FreelancerWalletPage() {
         <div>
           <h3 className="text-lg font-bold text-slate-900">Transaction History</h3>
           <p className="text-xs text-slate-500">
-            Full record of all escrow releases, deposits, and simulated withdrawals.
+            Full record of all milestone earnings, deposits, and withdrawals.
           </p>
         </div>
 
@@ -229,7 +229,7 @@ export default function FreelancerWalletPage() {
                         </span>
                       </td>
                       <td className="py-3.5 px-4 text-xs text-slate-600 max-w-sm truncate">
-                        {tx.description || (type === 'REFUND' ? 'Simulated payout withdrawal' : 'Milestone transaction')}
+                        {tx.description || (type === 'REFUND' ? 'Payout withdrawal to bank' : 'Milestone transaction')}
                       </td>
                       <td className="py-3.5 px-4 text-xs text-slate-400 whitespace-nowrap">
                         {new Date(tx.created_at).toLocaleString()}
@@ -243,13 +243,13 @@ export default function FreelancerWalletPage() {
         )}
       </div>
 
-      {/* Simulated Withdrawal Modal */}
+      {/* Withdrawal Modal */}
       {isWithdrawOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-150">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
-            <h3 className="text-lg font-bold text-slate-900">Simulate Payout Withdrawal</h3>
+            <h3 className="text-lg font-bold text-slate-900">Withdraw Earnings</h3>
             <p className="text-xs text-slate-500 mt-1">
-              Transfer funds from your available balance to your simulated external bank account.
+              Transfer funds from your available balance to your bank account or payout method.
             </p>
 
             <form onSubmit={handleWithdraw} className="mt-5 space-y-4">

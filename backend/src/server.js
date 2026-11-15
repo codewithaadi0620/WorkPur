@@ -12,7 +12,7 @@ async function startServer() {
 
     app.listen(config.port, () => {
       console.log(`====================================================`);
-      console.log(`🚀 FreelanceHub ADBMS Backend Server running on port ${config.port}`);
+      console.log(`🚀 FreelanceHub Platform Server running on port ${config.port}`);
       console.log(`📡 Health Check: http://localhost:${config.port}/api/health`);
       console.log(`🌍 Environment: ${config.nodeEnv}`);
       console.log(`====================================================`);

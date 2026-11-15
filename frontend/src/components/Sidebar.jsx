@@ -23,7 +23,7 @@ export default function Sidebar() {
     { to: '/client/projects', label: 'My Projects', icon: FolderKanban },
     { to: '/client/projects/new', label: 'Post a Project', icon: PlusCircle },
     { to: '/client/contracts', label: 'Contracts & Milestones', icon: FileText },
-    { to: '/client/wallet', label: 'Simulated Wallet', icon: Wallet },
+    { to: '/client/wallet', label: 'Billing & Wallet', icon: Wallet },
   ];
 
   const freelancerLinks = [

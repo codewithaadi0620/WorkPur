@@ -47,9 +47,9 @@ export default function AdminLogsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Database Audit Logs</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Security & Audit Logs</h1>
         <p className="text-sm text-slate-500 mt-1">
-          Immutable event stream written by PostgreSQL triggers and stored procedures for system accountability.
+          Complete system activity trail recording account administrative actions, status updates, and critical transactions.
         </p>
       </div>
 

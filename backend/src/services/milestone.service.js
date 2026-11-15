@@ -310,7 +310,7 @@ export async function releasePayment(clientId, milestoneId) {
 
   return {
     success: true,
-    message: 'Milestone payment released successfully via ADBMS stored procedure.',
+    message: 'Milestone payment released successfully.',
     milestone,
   };
 }

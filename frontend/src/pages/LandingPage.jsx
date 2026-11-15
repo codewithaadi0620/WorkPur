@@ -64,9 +64,9 @@ export default function LandingPage() {
       <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50/60 via-white to-slate-50 pt-16 pb-24 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100 text-indigo-800 text-xs font-semibold mb-6 shadow-xs border border-indigo-200">
-            <Database className="w-3.5 h-3.5 text-indigo-600" />
-            <span>ADBMS Relational Architecture • PostgreSQL 18 Engine</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100/80 text-indigo-800 text-xs font-semibold mb-6 shadow-xs border border-indigo-200">
+            <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />
+            <span>Verified Engineering & Design Talent • Guaranteed Escrow Protection</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-4xl mx-auto">
@@ -77,7 +77,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="mt-5 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Enterprise freelance marketplace featuring rule-based smart matching, atomic escrow transactions, and PostgreSQL stored procedures for rigorous contract lifecycle management.
+            The premier platform for high-velocity teams to discover vetted specialists, manage milestone deliverables, and disburse secure contract payments seamlessly.
           </p>
 
           {/* Search Box */}
@@ -138,13 +138,13 @@ export default function LandingPage() {
               ${parseFloat(stats.totalVolume || 5700).toLocaleString()}
             </div>
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">
-              Simulated Payments Released
+              Paid to Freelancers
             </div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-extrabold text-indigo-600">100%</div>
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">
-              ACID Transaction Safety
+              Escrow Protection
             </div>
           </div>
         </div>
@@ -178,7 +178,7 @@ export default function LandingPage() {
             </div>
             <h3 className="text-base font-bold text-slate-800">Smart Match & Escrow</h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              Our 4-factor smart algorithm matches talent by skills (50%), rating (20%), experience (15%), and budget (15%). When accepted, atomic procedures lock the contract and fund milestone escrow.
+              Our 4-factor matching evaluates skills, verified ratings, industry experience, and budget fit. When accepted, contracts are established with secure milestone escrow protection.
             </p>
           </div>
 
@@ -188,7 +188,7 @@ export default function LandingPage() {
             </div>
             <h3 className="text-base font-bold text-slate-800">Milestone Release & Reviews</h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              Freelancers submit work deliverables. Upon client approval, stored procedures disburse payments from escrow to the freelancer's wallet. Review ratings update dynamically via database triggers.
+              Freelancers submit deliverables directly for review. Upon client satisfaction, funds are released immediately to the freelancer's wallet, accompanied by genuine performance reviews.
             </p>
           </div>
         </div>
@@ -350,7 +350,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <p className="text-xs text-slate-300 leading-relaxed italic">
-                "The ADBMS architecture is transparent and rock-solid. From atomic proposal acceptance to audit trail tracking, everything functions with zero race conditions."
+                "FreelanceHub made scaling our development team effortless. The milestone escrow workflow gave both our team and developers complete transparency and confidence."
               </p>
               <div className="mt-4 pt-3 border-t border-slate-700 text-xs">
                 <p className="font-bold text-white">TechStart Labs</p>

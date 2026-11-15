@@ -177,7 +177,7 @@ export default function ClientContractDetailsPage() {
   };
 
   const handleReleasePayment = async (milestoneId) => {
-    if (!window.confirm('Release payment for this milestone? This executes the ADBMS release_milestone_payment() stored procedure.')) {
+    if (!window.confirm('Release payment for this milestone? Escrow funds will be transferred directly to the specialist.')) {
       return;
     }
 
@@ -306,7 +306,7 @@ export default function ClientContractDetailsPage() {
           <div>
             <span className="text-slate-400 block text-[11px]">Escrow Security:</span>
             <span className="font-semibold text-emerald-600 flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5" /> Stored Procedure Protected
+              <ShieldCheck className="w-3.5 h-3.5" /> Escrow Protected
             </span>
           </div>
         </div>
@@ -490,14 +490,14 @@ export default function ClientContractDetailsPage() {
                       </>
                     )}
 
-                    {/* Release Payment (Calls Stored Procedure) */}
+                    {/* Release Payment */}
                     {m.status === 'APPROVED' && (
                       <button
                         disabled={processingId === m.id}
                         onClick={() => handleReleasePayment(m.id)}
                         className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-sm"
                       >
-                        {processingId === m.id ? 'Releasing...' : 'Release Escrow Payment (Stored Proc)'}
+                        {processingId === m.id ? 'Releasing...' : 'Release Escrow Payment'}
                       </button>
                     )}
 

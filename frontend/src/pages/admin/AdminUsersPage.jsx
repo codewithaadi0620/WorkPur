@@ -65,7 +65,7 @@ export default function AdminUsersPage() {
         reason: suspendReason,
       });
       if (res.success) {
-        toast.success(`User ${suspendModalUser.name} suspended via stored procedure!`);
+        toast.success(`User ${suspendModalUser.name} suspended successfully.`);
         setSuspendModalUser(null);
         setSuspendReason('');
         fetchUsers();
@@ -95,7 +95,7 @@ export default function AdminUsersPage() {
       <div>
         <h1 className="text-2xl font-bold text-slate-900">User Management</h1>
         <p className="text-sm text-slate-500 mt-1">
-          Monitor platform participants, review role privileges, and enforce account suspension via PostgreSQL stored procedure.
+          Monitor platform members, verify role privileges, and manage account statuses.
         </p>
       </div>
 
@@ -247,7 +247,7 @@ export default function AdminUsersPage() {
               </h3>
             </div>
             <p className="text-xs text-slate-500 mt-2">
-              Executing stored procedure <code>suspend_user(p_user_id, p_admin_id, p_reason)</code>. This revokes active sessions and logs an immutable audit event in PostgreSQL.
+              Executing this action immediately revokes active login sessions and creates an entry in the platform security audit trail.
             </p>
 
             <form onSubmit={handleSuspendSubmit} className="mt-4 space-y-4">

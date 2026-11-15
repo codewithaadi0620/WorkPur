@@ -76,7 +76,7 @@ export default function Navbar() {
                   FreelanceHub
                 </span>
                 <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-400 -mt-1">
-                  ADBMS Platform
+                  Talent Marketplace
                 </span>
               </div>
             </Link>
@@ -91,18 +91,8 @@ export default function Navbar() {
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                Find Work / Projects
+                Explore Projects
               </Link>
-
-              <a
-                href="http://localhost:5000/uploads/FreelanceHub_ADBMS_Report.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition border border-indigo-200 inline-flex items-center gap-1 ml-1"
-                title="Download complete academic documentation"
-              >
-                📄 ADBMS Report (PDF)
-              </a>
 
 
               {isAuthenticated && (
@@ -142,7 +132,7 @@ export default function Navbar() {
                 <Link
                   to={isClient ? '/client/wallet' : '/freelancer/wallet'}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold transition-colors"
-                  title="View simulated wallet"
+                  title="View wallet & balance"
                 >
                   <Wallet className="w-4 h-4 text-emerald-600" />
                   <span>

@@ -60,9 +60,9 @@ export default function ClientWalletPage() {
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Client Simulated Wallet</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Billing & Wallet</h1>
             <p className="text-xs text-slate-500 mt-1">
-              Simulated payment ledger ensuring ACID transactional integrity and escrow funding
+              Manage project balances, fund contract milestone escrow, and track disbursements
             </p>
           </div>
           <button
@@ -70,7 +70,7 @@ export default function ClientWalletPage() {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all shrink-0"
           >
             <ArrowDownCircle className="w-4 h-4" />
-            <span>Deposit Simulated Funds</span>
+            <span>Deposit Funds</span>
           </button>
         </div>
 
@@ -85,7 +85,7 @@ export default function ClientWalletPage() {
                 ${parseFloat(wallet.available_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </div>
               <p className="text-xs text-slate-300 pt-1">
-                Liquid simulated funds ready to fund contract milestones into escrow
+                Funds ready to fund active project milestones into escrow
               </p>
             </div>
             <Wallet className="w-32 h-32 text-indigo-500/10 absolute -right-4 -bottom-4" />
@@ -100,7 +100,7 @@ export default function ClientWalletPage() {
                 ${parseFloat(wallet.reserved_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </div>
               <p className="text-xs text-slate-500 pt-1 flex items-center gap-1 text-emerald-600 font-medium">
-                <ShieldCheck className="w-4 h-4" /> Protected by PostgreSQL row-level locks
+                <ShieldCheck className="w-4 h-4" /> Protected by Automated Escrow Verification
               </p>
             </div>
           </div>
@@ -108,8 +108,8 @@ export default function ClientWalletPage() {
 
         {/* Transaction Ledger Table */}
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-4">
-          <h2 className="text-lg font-bold text-slate-900">Financial Transaction Ledger</h2>
-          <p className="text-xs text-slate-500">Immutable chronological record of all wallet events</p>
+          <h2 className="text-lg font-bold text-slate-900">Transaction History</h2>
+          <p className="text-xs text-slate-500">Chronological history of deposits, escrow allocations, and releases</p>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">

@@ -61,7 +61,7 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'FreelanceHub ADBMS Backend API',
+    service: 'FreelanceHub API',
     database: 'PostgreSQL 18',
   });
 });
