@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { contractsApi } from '../../services/api';
+import { contractsApi, paymentsApi } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/Sidebar';
 import ReviewModal from '../../components/ReviewModal';
+import DepositModal from '../../components/DepositModal';
 import toast from 'react-hot-toast';
 import { 
   ArrowLeft, 
@@ -16,7 +18,8 @@ import {
   Star,
   Send,
   Github,
-  ExternalLink
+  ExternalLink,
+  Wallet
 } from 'lucide-react';
 
 function renderSubmissionNotes(text) {
@@ -45,11 +48,14 @@ function renderSubmissionNotes(text) {
 }
 
 export default function ClientContractDetailsPage() {
+  const { user, refreshUser } = useAuth();
   const { id } = useParams();
   const [contract, setContract] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAddMilestone, setShowAddMilestone] = useState(false);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [depositModalOpen, setDepositModalOpen] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(0);
   const [processingId, setProcessingId] = useState(null);
 
   // New Milestone state
@@ -60,7 +66,19 @@ export default function ClientContractDetailsPage() {
 
   useEffect(() => {
     fetchContract();
+    fetchWalletBalance();
   }, [id]);
+
+  const fetchWalletBalance = async () => {
+    try {
+      const res = await paymentsApi.getWallet();
+      if (res.success && res.data?.wallet) {
+        setWalletBalance(parseFloat(res.data.wallet.available_balance || 0));
+      }
+    } catch (err) {
+      console.error('Failed to load wallet balance', err);
+    }
+  };
 
   const fetchContract = async () => {
     try {
@@ -111,9 +129,15 @@ export default function ClientContractDetailsPage() {
       if (res.success) {
         toast.success(res.message);
         fetchContract();
+        fetchWalletBalance();
+        await refreshUser?.();
       }
     } catch (err) {
-      toast.error(err.message || 'Escrow funding failed.');
+      const msg = err.message || 'Escrow funding failed.';
+      toast.error(msg);
+      if (msg.toLowerCase().includes('insufficient') || msg.toLowerCase().includes('balance') || msg.toLowerCase().includes('wallet')) {
+        setDepositModalOpen(true);
+      }
     } finally {
       setProcessingId(null);
     }
@@ -163,6 +187,8 @@ export default function ClientContractDetailsPage() {
       if (res.success) {
         toast.success(res.message);
         fetchContract();
+        fetchWalletBalance();
+        await refreshUser?.();
       }
     } catch (err) {
       toast.error(err.message || 'Payment release failed.');
@@ -287,20 +313,36 @@ export default function ClientContractDetailsPage() {
 
         {/* Milestones Management Card */}
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
             <div>
               <h2 className="text-lg font-bold text-slate-900">Contract Milestones</h2>
               <p className="text-xs text-slate-500">Fund escrow, review submitted deliverables, and release payments</p>
             </div>
-            {contract.status === 'ACTIVE' && (
+            
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2 text-xs">
+                <Wallet className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="text-slate-500">Available:</span>
+                <span className="font-bold text-slate-900">${walletBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              </div>
               <button
-                onClick={() => setShowAddMilestone(!showAddMilestone)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition-colors"
+                type="button"
+                onClick={() => setDepositModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition-colors border border-emerald-200"
               >
-                <PlusCircle className="w-4 h-4" />
-                <span>{showAddMilestone ? 'Cancel' : 'Add Milestone'}</span>
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>Deposit Funds</span>
               </button>
-            )}
+              {contract.status === 'ACTIVE' && (
+                <button
+                  onClick={() => setShowAddMilestone(!showAddMilestone)}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition-colors border border-indigo-200"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>{showAddMilestone ? 'Cancel' : 'Add Milestone'}</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Add Milestone Form */}
@@ -479,6 +521,17 @@ export default function ClientContractDetailsPage() {
         isOpen={reviewModalOpen}
         onClose={() => setReviewModalOpen(false)}
         onSuccess={fetchContract}
+      />
+
+      {/* Deposit Modal */}
+      <DepositModal
+        isOpen={depositModalOpen}
+        onClose={() => setDepositModalOpen(false)}
+        onSuccess={() => {
+          fetchWalletBalance();
+          fetchContract();
+          refreshUser?.();
+        }}
       />
     </div>
   );

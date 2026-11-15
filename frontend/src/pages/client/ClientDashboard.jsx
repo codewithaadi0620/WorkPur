@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { analyticsApi, projectsApi, contractsApi } from '../../services/api';
 import Sidebar from '../../components/Sidebar';
+import DepositModal from '../../components/DepositModal';
 import { 
   FolderKanban, 
   PlusCircle, 
@@ -9,9 +10,10 @@ import {
   FileText, 
   CheckCircle, 
   Clock, 
-  ArrowRight,
-  TrendingUp,
-  Layers
+  ArrowRight, 
+  TrendingUp, 
+  Layers,
+  Wallet
 } from 'lucide-react';
 
 export default function ClientDashboard() {
@@ -19,26 +21,28 @@ export default function ClientDashboard() {
   const [projects, setProjects] = useState([]);
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [depositModalOpen, setDepositModalOpen] = useState(false);
+
+  const loadDashboard = async () => {
+    try {
+      setLoading(true);
+      const [statsRes, projectsRes, contractsRes] = await Promise.all([
+        analyticsApi.getClientStats(),
+        projectsApi.getClientProjects(),
+        contractsApi.getUserContracts(),
+      ]);
+
+      if (statsRes.success) setStats(statsRes.data);
+      if (projectsRes.success) setProjects(projectsRes.data);
+      if (contractsRes.success) setContracts(contractsRes.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadDashboard() {
-      try {
-        setLoading(true);
-        const [statsRes, projectsRes, contractsRes] = await Promise.all([
-          analyticsApi.getClientStats(),
-          projectsApi.getClientProjects(),
-          contractsApi.getUserContracts(),
-        ]);
-
-        if (statsRes.success) setStats(statsRes.data);
-        if (projectsRes.success) setProjects(projectsRes.data);
-        if (contractsRes.success) setContracts(contractsRes.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadDashboard();
   }, []);
 
@@ -67,13 +71,22 @@ export default function ClientDashboard() {
               Manage your engineering projects, incoming proposals, and milestone escrow funding
             </p>
           </div>
-          <Link
-            to="/client/projects/new"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all shrink-0"
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span>Post a New Project</span>
-          </Link>
+          <div className="flex items-center gap-2.5 shrink-0">
+            <button
+              onClick={() => setDepositModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200 transition-all"
+            >
+              <Wallet className="w-4 h-4" />
+              <span>Deposit Funds</span>
+            </button>
+            <Link
+              to="/client/projects/new"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all shrink-0"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>Post a Project</span>
+            </Link>
+          </div>
         </div>
 
         {/* Metric Cards Grid */}
@@ -219,6 +232,12 @@ export default function ClientDashboard() {
         </div>
 
       </main>
+
+      <DepositModal
+        isOpen={depositModalOpen}
+        onClose={() => setDepositModalOpen(false)}
+        onSuccess={loadDashboard}
+      />
     </div>
   );
 }

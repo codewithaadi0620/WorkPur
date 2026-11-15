@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { paymentsApi } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { X, DollarSign, Wallet, ArrowDownCircle } from 'lucide-react';
 
 export default function DepositModal({ isOpen, onClose, onSuccess }) {
+  const { refreshUser } = useAuth();
   const [amount, setAmount] = useState(1000);
   const [description, setDescription] = useState('Simulated project funding deposit');
   const [submitting, setSubmitting] = useState(false);
@@ -26,6 +28,7 @@ export default function DepositModal({ isOpen, onClose, onSuccess }) {
         description,
       });
       toast.success(`Successfully deposited $${parseFloat(amount).toFixed(2)} into simulated wallet!`);
+      await refreshUser?.();
       onSuccess?.();
       onClose();
     } catch (err) {

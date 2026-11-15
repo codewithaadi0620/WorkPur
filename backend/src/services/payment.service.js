@@ -48,6 +48,14 @@ export async function depositFunds(userId, amount, description = 'Simulated fund
   try {
     await client.query('BEGIN');
 
+    // Ensure wallet exists
+    await client.query(
+      `INSERT INTO wallets (user_id, available_balance, reserved_balance)
+       VALUES ($1, 0.00, 0.00)
+       ON CONFLICT (user_id) DO NOTHING;`,
+      [userId]
+    );
+
     // Lock wallet FOR UPDATE
     const wRes = await client.query(
       `SELECT id, available_balance
@@ -108,6 +116,14 @@ export async function withdrawFunds(userId, amount) {
   const client = await getClient();
   try {
     await client.query('BEGIN');
+
+    // Ensure wallet exists
+    await client.query(
+      `INSERT INTO wallets (user_id, available_balance, reserved_balance)
+       VALUES ($1, 0.00, 0.00)
+       ON CONFLICT (user_id) DO NOTHING;`,
+      [userId]
+    );
 
     const wRes = await client.query(
       `SELECT id, available_balance

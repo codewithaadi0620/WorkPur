@@ -67,7 +67,14 @@ export async function fundMilestoneEscrow(clientId, milestoneId) {
 
     const amount = parseFloat(milestone.amount);
 
-    // 2. Lock client wallet FOR UPDATE
+    // 2. Ensure client wallet exists and lock FOR UPDATE
+    await client.query(
+      `INSERT INTO wallets (user_id, available_balance, reserved_balance)
+       VALUES ($1, 0.00, 0.00)
+       ON CONFLICT (user_id) DO NOTHING;`,
+      [clientId]
+    );
+
     const wRes = await client.query(
       `SELECT id, available_balance, reserved_balance
        FROM wallets
@@ -269,12 +276,26 @@ export async function rejectMilestone(clientId, milestoneId, reason) {
  * Validates APPROVED status, escrow balance, transfers money, creates ledger entries, and marks PAID.
  */
 export async function releasePayment(clientId, milestoneId) {
-  await query('CALL release_milestone_payment($1, $2);', [milestoneId, clientId]);
-
   const milestone = await prisma.milestones.findUnique({
     where: { id: milestoneId },
     include: { contracts: true },
   });
+
+  if (!milestone) {
+    const error = new Error('Milestone not found.');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  // Ensure wallets exist for both parties
+  await query(
+    `INSERT INTO wallets (user_id, available_balance, reserved_balance)
+     VALUES ($1, 0.00, 0.00), ($2, 0.00, 0.00)
+     ON CONFLICT (user_id) DO NOTHING;`,
+    [clientId, milestone.contracts.freelancer_id]
+  );
+
+  await query('CALL release_milestone_payment($1, $2);', [milestoneId, clientId]);
 
   // Notify freelancer of payment receipt
   await prisma.notifications.create({
