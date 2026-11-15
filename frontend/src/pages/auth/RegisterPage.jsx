@@ -18,7 +18,8 @@ import {
   RefreshCw, 
   KeyRound,
   Sparkles,
-  Edit3
+  Edit3,
+  ExternalLink
 } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -35,6 +36,7 @@ export default function RegisterPage() {
   // OTP State
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
   const [previewOtp, setPreviewOtp] = useState('');
+  const [emailPreviewUrl, setEmailPreviewUrl] = useState('');
   const [otpCountdown, setOtpCountdown] = useState(60);
   const [otpError, setOtpError] = useState('');
   const otpInputRefs = useRef([]);
@@ -71,6 +73,9 @@ export default function RegisterPage() {
 
       if (res.previewOtp) {
         setPreviewOtp(res.previewOtp);
+      }
+      if (res.emailDelivery?.previewUrl) {
+        setEmailPreviewUrl(res.emailDelivery.previewUrl);
       }
 
       toast.success(`Verification code dispatched to ${email}`);
@@ -143,6 +148,9 @@ export default function RegisterPage() {
       const res = await authApi.sendOtp({ email });
       if (res.previewOtp) {
         setPreviewOtp(res.previewOtp);
+      }
+      if (res.emailDelivery?.previewUrl) {
+        setEmailPreviewUrl(res.emailDelivery.previewUrl);
       }
       setOtpCountdown(60);
       setOtpDigits(['', '', '', '', '', '']);
@@ -434,6 +442,21 @@ export default function RegisterPage() {
                 <p className="text-[11px] text-emerald-700 dark:text-emerald-400">
                   Your secure 6-digit OTP is: <span className="font-mono font-black text-sm tracking-widest text-emerald-900 dark:text-emerald-200 bg-white/80 dark:bg-slate-900/80 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-700 ml-1">{previewOtp || '123456'}</span>
                 </p>
+
+                {emailPreviewUrl && (
+                  <div className="mt-2.5 pt-2 border-t border-emerald-200/80 dark:border-emerald-800/60 flex items-center justify-between">
+                    <span className="text-[11px] text-emerald-800 dark:text-emerald-300 font-medium">Rendered HTML email:</span>
+                    <a
+                      href={emailPreviewUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-700 dark:text-indigo-400 hover:underline"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span>Open Dispatched Email in Web Inbox</span>
+                    </a>
+                  </div>
+                )}
               </div>
 
               {/* 6 Digit Input Boxes */}

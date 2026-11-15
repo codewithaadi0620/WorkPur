@@ -1,6 +1,7 @@
 import { prisma } from '../config/database.js';
 import { hashPassword, comparePassword } from '../utils/hash.js';
 import { signToken } from '../utils/jwt.js';
+import { sendOtpEmail } from './email.service.js';
 
 // In-memory OTP store for email verification
 const otpStore = new Map();
@@ -42,10 +43,27 @@ export async function sendRegistrationOtp(email) {
   console.log(`   Validity:  10 minutes`);
   console.log('----------------------------------------------------');
 
+  // 5. Send actual email via nodemailer transporter
+  let emailDelivery = null;
+  try {
+    emailDelivery = await sendOtpEmail({
+      to: normalizedEmail,
+      code,
+    });
+  } catch (emailErr) {
+    console.error('Email dispatch error:', emailErr.message);
+  }
+
   return {
     success: true,
     message: `Verification code sent to ${normalizedEmail}`,
     previewOtp: code,
+    emailDelivery: emailDelivery
+      ? {
+          sent: emailDelivery.sent,
+          previewUrl: emailDelivery.previewUrl || null,
+        }
+      : null,
   };
 }
 
