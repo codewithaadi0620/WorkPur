@@ -2,12 +2,44 @@ import { request, app, prisma } from './helpers.js';
 
 describe('AUTHENTICATION & AUTHORIZATION SUITE', () => {
   const testEmail = `tester_${Date.now()}@example.com`;
+  const otpEmail = `otp_test_${Date.now()}@example.com`;
+  let generatedOtp = '';
 
   afterAll(async () => {
     // Cleanup created test user
     await prisma.users.deleteMany({
       where: { email: { contains: 'tester_' } },
     });
+  });
+
+  test('POST /api/auth/send-otp - Successfully generates 6-digit OTP for unregistered email', async () => {
+    const res = await request(app)
+      .post('/api/auth/send-otp')
+      .send({ email: otpEmail });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.previewOtp).toBeDefined();
+    expect(res.body.previewOtp.length).toBe(6);
+    generatedOtp = res.body.previewOtp;
+  });
+
+  test('POST /api/auth/verify-otp - Successfully validates correct OTP', async () => {
+    const res = await request(app)
+      .post('/api/auth/verify-otp')
+      .send({ email: otpEmail, otp: generatedOtp });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  test('POST /api/auth/verify-otp - Rejects incorrect OTP', async () => {
+    const res = await request(app)
+      .post('/api/auth/verify-otp')
+      .send({ email: otpEmail, otp: '000000' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
   });
 
   test('POST /api/auth/register - Successfully register new client account', async () => {

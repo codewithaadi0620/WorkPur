@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import SecurityCaptcha from '../../components/SecurityCaptcha';
-import { Briefcase, Lock, Mail, ArrowRight, ShieldCheck, UserCheck } from 'lucide-react';
+import Logo from '../../components/Logo';
+import { Lock, Mail, ArrowRight, ShieldCheck, UserCheck } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -48,17 +49,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-slate-50">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-slate-50 transition-colors">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="text-center">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-200">
-            <Briefcase className="w-6 h-6" />
-          </div>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900">
-            Welcome to FreelanceHub
+        <div className="text-center flex flex-col items-center">
+          <Logo size="lg" className="mb-2" />
+          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+            Welcome back to WorkPur
           </h2>
-          <p className="mt-1 text-xs text-slate-500">
-            Sign in to manage your projects, contracts, and talent
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Enterprise authentication & verified talent portal
           </p>
         </div>
 

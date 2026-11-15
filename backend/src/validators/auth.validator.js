@@ -10,6 +10,16 @@ export const registerSchema = z.object({
   companyName: z.string().optional(),
   title: z.string().optional(),
   hourlyRate: z.number().nonnegative().optional(),
+  otp: z.string().optional(),
+});
+
+export const sendOtpSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
+
+export const verifyOtpSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  otp: z.string().min(4, 'Verification code is required').max(10),
 });
 
 export const loginSchema = z.object({

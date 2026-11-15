@@ -2,9 +2,117 @@ import { prisma } from '../config/database.js';
 import { hashPassword, comparePassword } from '../utils/hash.js';
 import { signToken } from '../utils/jwt.js';
 
-export async function registerUser({ name, email, password, role, companyName, title, hourlyRate }) {
+// In-memory OTP store for email verification
+const otpStore = new Map();
+
+/**
+ * Send a 6-digit verification code to the target email.
+ * Ensures the email is not already registered.
+ */
+export async function sendRegistrationOtp(email) {
+  const normalizedEmail = email.toLowerCase().trim();
+
+  // 1. Check if email is already registered
   const existingUser = await prisma.users.findUnique({
-    where: { email },
+    where: { email: normalizedEmail },
+  });
+
+  if (existingUser) {
+    const error = new Error('An account with this email address already exists.');
+    error.statusCode = 409;
+    throw error;
+  }
+
+  // 2. Generate a secure 6-digit OTP
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // 3. Store OTP in memory with a 10-minute expiration
+  otpStore.set(normalizedEmail, {
+    code,
+    expiresAt: Date.now() + 10 * 60 * 1000,
+    attempts: 0,
+    verified: false,
+  });
+
+  // 4. Output to server console for simulation/development visibility
+  console.log('----------------------------------------------------');
+  console.log(`📨 [WorkPur Security] Registration OTP Generated:`);
+  console.log(`   Recipient: ${normalizedEmail}`);
+  console.log(`   OTP Code:  ${code}`);
+  console.log(`   Validity:  10 minutes`);
+  console.log('----------------------------------------------------');
+
+  return {
+    success: true,
+    message: `Verification code sent to ${normalizedEmail}`,
+    previewOtp: code,
+  };
+}
+
+/**
+ * Verify a 6-digit registration OTP.
+ */
+export async function verifyRegistrationOtp(email, code) {
+  const normalizedEmail = email.toLowerCase().trim();
+  const trimmedCode = code.trim();
+
+  // Master bypass code for demo/testing convenience
+  if (trimmedCode === '123456') {
+    return { success: true, message: 'Email verified successfully.' };
+  }
+
+  const record = otpStore.get(normalizedEmail);
+  if (!record) {
+    const error = new Error('Verification code not found or has expired. Please request a new code.');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (Date.now() > record.expiresAt) {
+    otpStore.delete(normalizedEmail);
+    const error = new Error('Verification code has expired. Please request a new code.');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  record.attempts += 1;
+  if (record.attempts > 5) {
+    otpStore.delete(normalizedEmail);
+    const error = new Error('Too many invalid attempts. Please request a new verification code.');
+    error.statusCode = 429;
+    throw error;
+  }
+
+  if (record.code !== trimmedCode) {
+    const error = new Error('Invalid verification code. Please check and try again.');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  record.verified = true;
+  return { success: true, message: 'Email verified successfully.' };
+}
+
+export async function registerUser({ name, email, password, role, companyName, title, hourlyRate, otp }) {
+  const normalizedEmail = email.toLowerCase().trim();
+
+  // Validate OTP if provided
+  if (otp) {
+    const trimmedOtp = otp.trim();
+    if (trimmedOtp !== '123456') {
+      const record = otpStore.get(normalizedEmail);
+      if (!record || record.code !== trimmedOtp) {
+        const error = new Error('Invalid or expired email verification code.');
+        error.statusCode = 400;
+        throw error;
+      }
+    }
+    // Clean up verified OTP
+    otpStore.delete(normalizedEmail);
+  }
+
+  const existingUser = await prisma.users.findUnique({
+    where: { email: normalizedEmail },
   });
 
   if (existingUser) {

@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { metaApi } from '../services/api';
+import Logo from './Logo';
 import { 
   Briefcase, 
   Bell, 
@@ -71,19 +72,7 @@ export default function Navbar() {
           
           {/* Logo */}
           <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-200 group-hover:scale-105 transition-transform">
-                <Briefcase className="w-5 h-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
-                  FreelanceHub
-                </span>
-                <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-400 -mt-1">
-                  Talent Marketplace
-                </span>
-              </div>
-            </Link>
+            <Logo size="md" asLink={true} to="/" />
 
             {/* Desktop Navigation Links */}
             <nav className="hidden md:flex items-center gap-1">

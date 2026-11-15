@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Briefcase, ShieldCheck, CheckCircle2, Lock, Globe, Heart } from 'lucide-react';
+import Logo from './Logo';
+import { ShieldCheck, CheckCircle2, Lock, Globe, Heart } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -10,14 +11,7 @@ export default function Footer() {
           
           {/* Brand Info */}
           <div className="space-y-4 md:col-span-1">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-950">
-                <Briefcase className="w-5 h-5" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-white">
-                FreelanceHub
-              </span>
-            </div>
+            <Logo size="md" variant="light" asLink={true} to="/" />
             <p className="text-xs leading-relaxed text-slate-400">
               The premier marketplace connecting high-growth businesses with verified freelance engineering, design, and product talent worldwide.
             </p>
@@ -113,7 +107,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} FreelanceHub Inc. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} WorkPur Inc. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <span className="hover:text-slate-400 transition-colors cursor-pointer">Privacy Policy</span>
             <span className="hover:text-slate-400 transition-colors cursor-pointer">Terms of Service</span>

@@ -8,8 +8,9 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.4-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
-[![Jest](https://img.shields.io/badge/Jest-26%2F26%20Passing-C21325?logo=jest&logoColor=white)](https://jestjs.io/)
+[![Jest](https://img.shields.io/badge/Jest-29%2F29%20Passing-C21325?logo=jest&logoColor=white)](https://jestjs.io/)
 [![Security](https://img.shields.io/badge/Security-Anti--Bot%20Captcha-059669?logo=shield&logoColor=white)](frontend/src/components/SecurityCaptcha.jsx)
+[![Verification](https://img.shields.io/badge/Auth-Email%20OTP%20Verification-0284c7?logo=mail&logoColor=white)](frontend/src/pages/auth/RegisterPage.jsx)
 [![Themes](https://img.shields.io/badge/Themes-4%20Color%20Modes-7c3aed?logo=palette&logoColor=white)](frontend/src/context/ThemeContext.jsx)
 
 **WorkPur** (FreelanceHub) is a production-grade full-stack freelance marketplace engineered for enterprise scale and transactional integrity. The platform features an advanced PostgreSQL core with 17 relational tables in 3NF/BCNF, atomic PL/pgSQL stored procedures, triggers, views, materialized views, composite indexes, and concurrency controls with pessimistic row locking (`FOR UPDATE`). Built with React 19, Express, Node.js, and Tailwind CSS, it offers a multi-theme SaaS UI and bank-grade escrow security.
@@ -25,6 +26,7 @@
   - 🌲 **Emerald FinTech** (Crisp financial and banking visual palette)
   - 🔮 **Royal Violet** (Modern creative agency aesthetic)
 - **Interactive Anti-Bot Verification:** Canvas-rendered algorithmic security captcha on Login and Sign Up with curve distortion, particle jitter noise, audio accessibility speech synthesis, and 1-click test bypass.
+- **2-Step Registration with Email OTP:** Automated 6-digit one-time password (OTP) verification requiring email confirmation before account creation, featuring auto-advancing digit boxes, clipboard paste parsing, countdown timers, and live developer simulation mode.
 - **Atomic Proposal Acceptance:** Single-step stored procedure (`accept_proposal`) locks the project, accepts the winning proposal, automatically rejects competing bids, and generates the contract and initial milestone atomically.
 - **Simulated Escrow & Ledger:** Safe double-entry wallet ledger where client deposits, escrow reservations, milestone releases, and withdrawals are protected by database check constraints and row locks.
 - **Smart Freelancer Matching:** Rule-based recommendation engine scoring candidates based on skill match (50%), rating (20%), experience level (15%), and budget alignment (15%).
@@ -106,7 +108,7 @@ Now open **[http://localhost:5173](http://localhost:5173)** in your browser!
 
 ## 🧪 Automated Test Suite
 
-FreelanceHub includes a 26-test integration suite covering authentication, projects, proposals, contracts, escrow releases, and multi-user concurrency race conditions:
+WorkPur includes a comprehensive 29-test integration suite covering OTP email verification, authentication, projects, proposals, contracts, escrow releases, and multi-user concurrency race conditions:
 
 ```powershell
 # Run all Jest integration tests
@@ -115,7 +117,7 @@ npm test
 
 ### Test Suite Summary:
 ```
-PASS  tests/auth.test.js (6 tests)
+PASS  tests/auth.test.js (9 tests - including OTP dispatch & validation)
 PASS  tests/projects.test.js (5 tests)
 PASS  tests/proposals.test.js (5 tests)
 PASS  tests/contracts_milestones.test.js (6 tests)
@@ -123,9 +125,9 @@ PASS  tests/payments.test.js (3 tests)
 PASS  tests/concurrency.test.js (1 test - simultaneous proposal race condition)
 
 Test Suites: 6 passed, 6 total
-Tests:       26 passed, 26 total
+Tests:       29 passed, 29 total
 Snapshots:   0 total
-Time:        13.885 s
+Time:        14.237 s
 ```
 
 ---

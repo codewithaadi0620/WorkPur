@@ -71,8 +71,8 @@ export default function LandingPage() {
 
           <h1 className="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-4xl mx-auto">
             Connect with World-Class Freelance Talent on{' '}
-            <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-              FreelanceHub
+            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
+              WorkPur
             </span>
           </h1>
 
@@ -154,7 +154,7 @@ export default function LandingPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-            How FreelanceHub Works
+            How WorkPur Works
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-2">
             A transparent, transaction-safe workflow for both clients and freelancers
@@ -350,7 +350,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <p className="text-xs text-slate-300 leading-relaxed italic">
-                "FreelanceHub made scaling our development team effortless. The milestone escrow workflow gave both our team and developers complete transparency and confidence."
+                "WorkPur made scaling our development team effortless. The milestone escrow workflow gave both our team and developers complete transparency and confidence."
               </p>
               <div className="mt-4 pt-3 border-t border-slate-700 text-xs">
                 <p className="font-bold text-white">TechStart Labs</p>

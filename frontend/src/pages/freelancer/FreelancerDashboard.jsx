@@ -93,7 +93,7 @@ export default function FreelancerDashboard() {
             Welcome back, {user?.name}!
           </h1>
           <p className="text-indigo-200 mt-2 text-sm leading-relaxed">
-            Track your proposals, fulfill client milestones, submit deliverables, and grow your freelance career on FreelanceHub.
+            Track your proposals, fulfill client milestones, submit deliverables, and grow your freelance career on WorkPur.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
