@@ -1,6 +1,6 @@
 import { prisma, query, getClient } from '../config/database.js';
 
-export async function createMilestone(clientId, contractId, { title, description, amount, dueDate }) {
+export async function createMilestone(clientId, contractId, { title, description, amount, dueDate, due_date }) {
   const contract = await prisma.contracts.findUnique({
     where: { id: contractId },
   });
@@ -23,13 +23,24 @@ export async function createMilestone(clientId, contractId, { title, description
     throw error;
   }
 
+  const rawDate = dueDate || due_date;
+  let parsedDueDate = null;
+  if (rawDate) {
+    const d = new Date(rawDate);
+    if (!isNaN(d.getTime())) {
+      parsedDueDate = d;
+    }
+  }
+
+  const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+
   const milestone = await prisma.milestones.create({
     data: {
       contract_id: contractId,
-      title,
-      description,
-      amount,
-      due_date: dueDate ? new Date(dueDate) : null,
+      title: (title || 'Milestone Deliverable').trim(),
+      description: description || '',
+      amount: numericAmount,
+      due_date: parsedDueDate,
       status: 'PENDING',
     },
   });

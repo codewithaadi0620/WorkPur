@@ -94,29 +94,43 @@ export default function ClientContractDetailsPage() {
 
   const handleCreateMilestone = async (e) => {
     e.preventDefault();
-    if (!newAmount || parseFloat(newAmount) <= 0) {
+    const cleanTitle = (newTitle || '').trim();
+    if (!cleanTitle) {
+      toast.error('Milestone title is required.');
+      return;
+    }
+
+    const parsedAmount = parseFloat(newAmount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
       toast.error('Milestone amount must be positive.');
       return;
     }
 
     try {
       setProcessingId('create');
-      const res = await contractsApi.createMilestone(contract.id, {
-        title: newTitle,
-        description: newDesc,
-        amount: parseFloat(newAmount),
-        dueDate: newDueDate || undefined,
-      });
+      const payload = {
+        title: cleanTitle,
+        description: (newDesc || '').trim(),
+        amount: parsedAmount,
+      };
+
+      if (newDueDate) {
+        payload.dueDate = newDueDate;
+      }
+
+      const res = await contractsApi.createMilestone(contract.id, payload);
       if (res.success) {
-        toast.success('Milestone created.');
+        toast.success('Milestone created successfully.');
         setShowAddMilestone(false);
         setNewTitle('');
         setNewDesc('');
         setNewAmount('');
+        setNewDueDate('');
         fetchContract();
       }
     } catch (err) {
-      toast.error(err.message || 'Failed to create milestone.');
+      const errorMsg = err.errors?.map((e) => e.message).join('. ') || err.message || 'Failed to create milestone.';
+      toast.error(errorMsg);
     } finally {
       setProcessingId(null);
     }
@@ -349,7 +363,7 @@ export default function ClientContractDetailsPage() {
           {showAddMilestone && (
             <form onSubmit={handleCreateMilestone} className="p-5 bg-indigo-50/50 rounded-2xl border border-indigo-100 space-y-4">
               <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-900">New Milestone Details</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 <div className="sm:col-span-2">
                   <label className="block text-[11px] font-bold text-slate-700 mb-1">Title</label>
                   <input
@@ -372,6 +386,15 @@ export default function ClientContractDetailsPage() {
                     value={newAmount}
                     onChange={(e) => setNewAmount(e.target.value)}
                     className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">Target Due Date (Optional)</label>
+                  <input
+                    type="date"
+                    value={newDueDate}
+                    onChange={(e) => setNewDueDate(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
                   />
                 </div>
               </div>

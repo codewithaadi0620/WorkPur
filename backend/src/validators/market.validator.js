@@ -38,10 +38,36 @@ export const submitProposalSchema = z.object({
 });
 
 export const createMilestoneSchema = z.object({
-  title: z.string().min(3, 'Title is required').max(200),
-  description: z.string().optional(),
-  amount: z.number().positive('Milestone amount must be positive'),
-  dueDate: z.string().optional(),
+  title: z.preprocess(
+    (val) => (typeof val === 'string' ? val.trim() : val),
+    z.string({ required_error: 'Milestone title is required' })
+      .min(1, 'Milestone title is required')
+      .max(200, 'Milestone title cannot exceed 200 characters')
+  ),
+  description: z.preprocess(
+    (val) => (val === null || val === undefined ? '' : String(val).trim()),
+    z.string().optional()
+  ),
+  amount: z.preprocess(
+    (val) => {
+      if (typeof val === 'string') {
+        const cleaned = val.replace(/[^0-9.-]+/g, '');
+        const num = parseFloat(cleaned);
+        return isNaN(num) ? val : num;
+      }
+      return val;
+    },
+    z.number({ invalid_type_error: 'Milestone amount must be a valid number' })
+      .positive('Milestone amount must be greater than zero')
+  ),
+  dueDate: z.preprocess(
+    (val) => (val === '' || val === null || val === undefined ? undefined : val),
+    z.union([z.string(), z.date()]).optional()
+  ),
+  due_date: z.preprocess(
+    (val) => (val === '' || val === null || val === undefined ? undefined : val),
+    z.union([z.string(), z.date()]).optional()
+  ),
 });
 
 export const submitMilestoneSchema = z.object({

@@ -5,9 +5,10 @@ export function validate(schema) {
       next();
     } catch (error) {
       if (error.errors) {
+        const errorDetails = error.errors.map((e) => e.message).join('. ');
         return res.status(400).json({
           success: false,
-          message: 'Validation error',
+          message: errorDetails || 'Validation error',
           errors: error.errors.map((e) => ({
             field: e.path.join('.'),
             message: e.message,
